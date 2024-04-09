@@ -24,8 +24,9 @@ int handCompare(Card d_hand[], Card p_hand[], int d_len, int p_len);
 bool mainGame(); //this will return whether the user wants to play again
 
 int main() {
+	bool playAgain = true;
 
-	while (mainGame());
+	while (playAgain) playAgain = mainGame();
 	printf("Thanks for playing!");
 
 	return 0;
@@ -106,7 +107,6 @@ void deckShuffle(Card deck[]) {
 }
 
 void listPop(int popIndex, int len, Card deck[]) {
-	//printf("Popping %s of %s\n", deck[popIndex].valueName, deck[popIndex].suitName);
 	for (int i = 0; i < len; i++) {
 		deck[i] = deck[i + 1];
 	}
@@ -191,13 +191,10 @@ bool mainGame() {
 	int deckSize = 52, playerHandSize = 2, computerHandSize = 2, result;
 	Card deckList[52], playerHand[52], computerHand[52];
 	bool done = false, bust = false;
-	char playerChoice[6];
+	char playerChoice[6], playAgain;
 
 	createDeckFunc(deckList);
 	deckShuffle(deckList);
-	/*for (int i = 0; i < 52; i++) {
-		printf("%s of %s\n", deckList[i].valueName, deckList[i].suitName);
-	} */
 	cardAllocate(deckList, playerHand, computerHand);
 
 	while (!done) {
@@ -260,5 +257,12 @@ bool mainGame() {
 		}
 	}
 
-	return false;
+	printf("Would you like to play again? Y or N?: ");
+	scanf(" %c", &playAgain);
+	if (playAgain == 'y' || playAgain == 'Y') {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
