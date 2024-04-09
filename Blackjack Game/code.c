@@ -17,7 +17,7 @@ void deckShuffle(Card deck[]);
 void listPop(int popIndex, int len, Card deck[]);
 void cardAllocate(Card deck[], Card p_hand[], Card d_hand[]);
 void printHands(Card hand[], int len);
-void hitFunc(Card deck[], Card p_hand[], int* p_handSize);
+void hitFunc(Card deck[], Card p_hand[], int p_handSize);
 bool bustCheck(Card hand[], int len);
 bool compSumCheck(Card hand[], int len);
 int handCompare(Card d_hand[], Card p_hand[], int d_len, int p_len);
@@ -130,8 +130,8 @@ void printHands(Card hand[], int len) {
 	printf("\n");
 }
 
-void hitFunc(Card deck[], Card p_hand[], int* p_handSize) {
-	p_hand[(*p_handSize)] = deck[0];
+void hitFunc(Card deck[], Card p_hand[], int p_handSize) {
+	p_hand[(p_handSize)] = deck[0];
 	listPop(0, 52, deck);
 }
 
@@ -164,7 +164,6 @@ bool compSumCheck(Card hand[], int len) {
 	for (int i = 0; i < len; i++) {
 		sum += hand[i].value;
 	}
-	printf("Comp sum = %d\n", sum);
 	if (sum > 16) {
 		return true;
 	}
@@ -179,8 +178,6 @@ int handCompare(Card d_hand[], Card p_hand[], int d_len, int p_len) {
 	for (int i = 0; i < p_len; i++) {
 		p_sum += p_hand[i].value;
 	}
-	printf("Dealer sum = %d\n", d_sum);
-	printf("You're sum = %d\n", p_sum);
 	if (d_sum > p_sum) {
 		return 0; //dealer win
 	}
@@ -216,7 +213,7 @@ bool mainGame() {
 			done = true;
 		}
 		else if (strcmp("Hit", playerChoice) == 0 || strcmp("hit", playerChoice) == 0) {
-			hitFunc(deckList, playerHand, &playerHandSize);
+			hitFunc(deckList, playerHand, playerHandSize);
 			playerHandSize++;
 			printf("You've hit!\n");
 			bust = bustCheck(playerHand, playerHandSize);
@@ -233,11 +230,12 @@ bool mainGame() {
 
 	}
 
+	printf("The dealer reveals the hand: ");
+	printHands(computerHand, computerHandSize);
+
 	if (!bust) {
 		while (!compSumCheck(computerHand, computerHandSize)) {
-			printf("The dealer reveals the hand: ");
-			printHands(computerHand, computerHandSize);
-			hitFunc(deckList, computerHand, computerHandSize); //This is not currently working
+			hitFunc(deckList, computerHand, computerHandSize);
 			computerHandSize++;
 			bust = bustCheck(computerHand, computerHandSize);
 			if (bust) {
