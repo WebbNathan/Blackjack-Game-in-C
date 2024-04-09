@@ -20,6 +20,7 @@ void printHands(Card hand[], int len);
 void hitFunc(Card deck[], Card p_hand[], int* p_handSize);
 bool bustCheck(Card hand[], int len);
 bool compSumCheck(Card hand[], int len);
+int handCompare(Card d_hand[], Card p_hand[], int d_len, int p_len);
 bool mainGame(); //this will return whether the user wants to play again
 
 int main() {
@@ -159,11 +160,38 @@ bool bustCheck(Card hand[], int len) {
 }
 
 bool compSumCheck(Card hand[], int len) {
+	int sum = 0;
+	for (int i = 0; i < len; i++) {
+		sum += hand[i].value;
+	}
+	printf("Comp sum = %d\n", sum);
+	if (sum > 16) {
+		return true;
+	}
+	return false;
+}
 
+int handCompare(Card d_hand[], Card p_hand[], int d_len, int p_len) {
+	int d_sum = 0, p_sum = 0;
+	for (int i = 0; i < d_len; i++) {
+		d_sum += d_hand[i].value;
+	}
+	for (int i = 0; i < p_len; i++) {
+		p_sum += p_hand[i].value;
+	}
+	printf("Dealer sum = %d\n", d_sum);
+	printf("You're sum = %d\n", p_sum);
+	if (d_sum > p_sum) {
+		return 0; //dealer win
+	}
+	else if (p_sum > d_sum) {
+		return 1; //player win
+	}
+	return 2; //tie
 }
 
 bool mainGame() {
-	int deckSize = 52, playerHandSize = 2, computerHandSize = 2;
+	int deckSize = 52, playerHandSize = 2, computerHandSize = 2, result;
 	Card deckList[52], playerHand[52], computerHand[52];
 	bool done = false, bust = false;
 	char playerChoice[6];
@@ -205,7 +233,34 @@ bool mainGame() {
 
 	}
 
+	if (!bust) {
+		while (!compSumCheck(computerHand, computerHandSize)) {
+			printf("The dealer reveals the hand: ");
+			printHands(computerHand, computerHandSize);
+			hitFunc(deckList, computerHand, computerHandSize); //This is not currently working
+			computerHandSize++;
+			bust = bustCheck(computerHand, computerHandSize);
+			if (bust) {
+				printf("The computer has bust, their hand was: ");
+				printHands(computerHand, computerHandSize);
+			}
+		}
+	}
 
+	if (!bust) {
+		printf("The dealers final hand is: \n");
+		printHands(computerHand, computerHandSize);
+		result = handCompare(computerHand, playerHand, computerHandSize, playerHandSize);
+		if (result == 0) {
+			printf("The dealer wins!\n");
+		}
+		else if (result == 1) {
+			printf("You win!\n");
+		}
+		else {
+			printf("You tie with the dealer!\n");
+		}
+	}
 
 	return false;
 }
