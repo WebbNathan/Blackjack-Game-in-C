@@ -52,7 +52,7 @@ Card createCardFunc(int i, int j) {
 		break;
 	}
 
-	if (card.value == 1 || card.value > 9) {
+	if (card.value == 1 || card.value > 10) {
 		switch (card.value) {
 		case 1:
 			strcpy(card.valueName, "Ace\0");
